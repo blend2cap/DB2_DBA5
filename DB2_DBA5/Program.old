@@ -1,0 +1,76 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Collections;
+using System.Linq;
+using System.Text;
+using System.IO;
+using System.Text.RegularExpressions;
+
+namespace DB2_DBA5
+{
+    class Program
+    {
+        static int cont = 0;
+        static void Main(string[] args)
+        {
+
+            string dba2_path = @"C:\Users\blend\Desktop\Programming\DBA2_DBA5\DBA2.txt";
+            string dba5_path = @"C:\Users\blend\Desktop\Programming\DBA2_DBA5\DBA5.txt";
+            string[] dba2_allLines = File.ReadAllLines(dba2_path);
+            string[] dba5_allLines = File.ReadAllLines(dba5_path);
+
+            ArrayList dba2_list = new ArrayList();
+            ArrayList dba5_list = new ArrayList();
+
+            //test
+            dba2_list.Add(Format_DB(dba2_allLines[1729]));
+            //end test
+
+            //foreach (var record in dba2_allLines)
+            //{
+            //    dba2_list.Add(Format_DB(record));
+            //}
+            //foreach (var record in dba5_allLines)
+            //{
+            //    dba5_list.Add(Format_DB(record));
+            //}
+            Console.WriteLine(cont);
+            Console.ReadKey();
+
+        }
+        private static ArrayList Format_DB(string record)
+        {
+            ArrayList db_list = new ArrayList();
+            string[] splitted = Split(record);
+            foreach (var item in splitted)
+            {
+                db_list.Add(item);
+            }
+            try
+            {
+                db_list.RemoveAt(16);
+                db_list.RemoveAt(16);
+                db_list.RemoveAt(21);
+                db_list.RemoveAt(22);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                Console.WriteLine("Record con campi mancanti");
+                cont++;
+            }
+            return db_list;
+        }
+
+        private static string[] Split(string record)
+        {
+            char comma = ',';
+            var line=Regex.Replace(record, @"[^u0000-u007F\s.+-]", "p"); //replace bad chars with #
+            //line = Regex.Replace(line, @"[^A-Z#\s.+]+", String.Empty);
+            line=Regex.Replace(line, @"[a-z]", String.Empty);
+            line=Regex.Replace(line, @"\s+", ","); //insert commas in whitespaces
+            string[] splitted = line.Split(comma);
+            return splitted;
+        }
+
+    }
+}
